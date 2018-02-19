@@ -96,10 +96,9 @@ Please fill out this section with details relevant to your team.
 
 ### Team Members
 
-1. Member 1 Name
-2. Member 2 Name
-3. Member 3 Name
-4. Member 4 Name
+1. Chai Ming Xuan
+2. Tan Yi Yan
+3. Tan Wee Chen William
 
 ### Short Answer Questions
 
@@ -131,13 +130,10 @@ Answer: Please replace this sentence with your answer.
 
 #### Please declare your individual contributions to the assignment:
 
-1. Member 1 Name
+1. Chai Ming Xuan
     - Integrated feature x into component y
     - Implemented z
-2. Member 2 Name
+2. Tan Yi Yan
     - Wrote the front-end code
-3. Member 3 Name
+3. Tan Wee Chen William
     - Designed the database schema
-4. Member 4 Name
-    - Implemented x
-
