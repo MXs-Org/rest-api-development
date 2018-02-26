@@ -17,7 +17,7 @@ ps auxw | grep mysql | grep -v grep > /dev/null
 
 if [ $? == 0 ]
 then
-        service stop > /dev/null
+        service mysql stop > /dev/null
 fi
 
 TEAMID=`md5sum README.md | cut -d' ' -f 1`
@@ -30,5 +30,9 @@ docker build . -t $TEAMID
 
 echo "Starting app and database"
 
-docker run -p 3306:3306 -v /var/lib/mysql --name=testsql -e MYeSQL_ROOT_PASSWORD=password -d mysql &
-docker run -p 80:80 -p 8080:8080 -t $TEAMID
+docker run -v /var/lib/mysql --name=testsql -e MYSQL_ROOT_PASSWORD=password -d mysql
+
+echo "Loading Database"
+sleep 30
+
+docker run -p 80:80 -p 8080:8080 --link=testsql -t $TEAMID

@@ -12,10 +12,10 @@ CORS(app)
 
 mysql = MySQL()
 app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
-app.config['MYSQL_DATABASE_DB'] = 'testsql'
-app.config['MYSQL_DATABASE_HOST'] = '0.0.0.0'
-app.config['MYSQL_DATABASE_PORT'] = '32772'
-
+app.config['MYSQL_DATABASE_DB'] = 'diary_db'
+app.config['MYSQL_DATABASE_HOST'] = '172.17.0.2'
+app.config['MYSQL_DATABASE_PORT'] = 3306
+ 
 mysql.init_app(app)
 conn = mysql.connect()
 
