@@ -49,11 +49,16 @@ sudo docker run hello-world
 
 sudo ./run.sh
 ```
+(Docker CE installation instructions are from this
+[link](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).)
 
-# Accessing Database
+**Please consult your assignment hand-out for detailed setup information.**
+
+## Accessing Database
+To access and manipulate the database outside the app:
 
 1. Start the server with ./run.sh
-2. Open another terminal window and enter the following commands:
+2. Open another terminal window and enter the commands below:
 
 ```
 sudo docker exec -it diary_db_container bash
@@ -62,10 +67,7 @@ mysql -u root -p
 ```
 Enter the password to access the database when promtped.
 
-(Docker CE installation instructions are from this
-[link](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).)
 
-**Please consult your assignment hand-out for detailed setup information.**
 
 ## Grading
 
