@@ -50,6 +50,18 @@ sudo docker run hello-world
 sudo ./run.sh
 ```
 
+# Accessing Database
+
+1. Start the server with ./run.sh
+2. Open another terminal window and enter the following commands:
+
+```
+sudo docker exec -it diary_db_container bash
+mysql -u root -p
+
+```
+Enter the password to access the database when promtped.
+
 (Docker CE installation instructions are from this
 [link](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository).)
 
