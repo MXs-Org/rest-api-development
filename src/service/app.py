@@ -4,10 +4,20 @@ from flask import Flask
 from flask_cors import CORS
 import json
 import os
+from flaskext.mysql import MySQL
 
 app = Flask(__name__)
 # Enable cross origin sharing for all endpoints
 CORS(app)
+
+mysql = MySQL()
+app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
+app.config['MYSQL_DATABASE_DB'] = 'diary_db'
+app.config['MYSQL_DATABASE_HOST'] = '172.17.0.2'
+app.config['MYSQL_DATABASE_PORT'] = 3306
+ 
+mysql.init_app(app)
+conn = mysql.connect()
 
 # Remember to update this list
 ENDPOINT_LIST = ['/', '/meta/heartbeat', '/meta/members']
@@ -29,7 +39,6 @@ def make_json_response(data, status=True, code=200):
         mimetype='application/json'
     )
     return response
-
 
 @app.route("/")
 def index():
