@@ -35,6 +35,9 @@ docker run -v /tmp/diary_db:/var/lib/mysql --name=diary_db_container -e MYSQL_RO
 echo "Loading Database"
 sleep 5
 
+# Creates the database "diary_db"
+# TODO: add code here to automate the creation of the MySQL database
+
 # Builds web application image and runs webapp container
 TEAMID=`md5sum README.md | cut -d' ' -f 1`
 docker build . -t $TEAMID
