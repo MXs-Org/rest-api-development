@@ -1,26 +1,36 @@
 #!/usr/bin/python
 
+from flask_sqlalchemy import SQLAlchemy
+from database import db
 from flask import Flask
 from flask_cors import CORS
+from models import User
 import json
 import os
-from flaskext.mysql import MySQL
 
+##########################################
+## Set up Flask application and database
+##########################################
 app = Flask(__name__)
+app.config['DEBUG'] = True
+# TODO: migrate to MySQL after development is done, or maybe not?
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/diary_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Enable cross origin sharing for all endpoints
 CORS(app)
-
-mysql = MySQL()
-app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
-app.config['MYSQL_DATABASE_DB'] = 'diary_db'
-app.config['MYSQL_DATABASE_HOST'] = '172.17.0.2'
-app.config['MYSQL_DATABASE_PORT'] = 3306
- 
-mysql.init_app(app)
-conn = mysql.connect()
+db.init_app(app)
 
 # Remember to update this list
 ENDPOINT_LIST = ['/', '/meta/heartbeat', '/meta/members']
+
+#############################
+## Helper functions
+#############################
+
+def setup_database(app):
+    with app.app_context():
+        db.create_all()
 
 def make_json_response(data, status=True, code=200):
     """Utility function to create the JSON responses."""
@@ -39,6 +49,10 @@ def make_json_response(data, status=True, code=200):
         mimetype='application/json'
     )
     return response
+
+#############################
+## Routes
+#############################
 
 @app.route("/")
 def index():
@@ -66,5 +80,8 @@ if __name__ == '__main__':
     dname = os.path.dirname(abspath)
     os.chdir(dname)
 
-    # Run the application
+    # Checks if the sqlite database already exists
+    # TODO: need to change this when we move back to MySQL
+    if not os.path.isfile('/tmp/test.db'):
+      setup_database(app)
     app.run(debug=False, port=8080, host="0.0.0.0")
