@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-from flask_sqlalchemy import SQLAlchemy
-from database import db
-from flask import Flask
-from flask_cors import CORS
-from models import User
 import json
 import os
+
+from flask_sqlalchemy import SQLAlchemy
+from database import db
+from flask import Flask, request
+from flask_cors import CORS
+
+from models import User
 
 ##########################################
 ## Set up Flask application and database
@@ -50,6 +52,16 @@ def make_json_response(data, status=True, code=200):
     )
     return response
 
+def verify_user_registration(request):
+    # Checks if registration fields are all filled in
+    if len(request.form) < 4:
+        import pdb; pdb.set_trace()
+        return False
+    elif (request.form['username'] and request.form['password'] 
+        and request.form['fullname'] and request.form['age']):
+        return True
+    return False
+
 #############################
 ## Routes
 #############################
@@ -73,6 +85,31 @@ def meta_members():
         team_members = f.read().strip().split("\n")
     return make_json_response(team_members)
 
+@app.route("/users/register", methods=['POST'])
+def register_user():
+    if request.method == 'POST':
+        if not verify_user_registration(request):
+            return make_json_response("Please fill in all the required information", False)
+        try:
+            user = User(username=request.form['username'], fullname=request.form['fullname'], age=request.form['age'])
+            user.set_password(request.form['password'])
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            return make_json_response("User already exists!", False)
+        return make_json_response(None)
+
+@app.route("/users/authenticate", methods=['POST'])
+def auth_user():
+    pass
+
+@app.route("/users/expire", methods=['POST'])
+def expire_token():
+    pass
+
+@app.route("/users", methods=['POST'])
+def retrieve_user_info():
+    pass
 
 if __name__ == '__main__':
     # Change the working directory to the script directory
