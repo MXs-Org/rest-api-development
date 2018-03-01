@@ -25,8 +25,17 @@ CORS(app)
 db.init_app(app)
 
 # Remember to update this list
-ENDPOINT_LIST = ['/', '/meta/heartbeat', '/meta/members', '/diary', 
-                '/diary/create', '/diary/delete', '/diary/permission']
+ENDPOINT_LIST = ['/', 
+                '/meta/heartbeat', 
+                '/meta/members', 
+                '/users/register',
+                '/users/authenticate',
+                '/users/expire',
+                '/users',
+                '/diary', 
+                '/diary/create', 
+                '/diary/delete', 
+                '/diary/permission']
 
 #############################
 ## Helper functions
