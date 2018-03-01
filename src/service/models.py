@@ -1,3 +1,5 @@
+import json
+
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,6 +20,15 @@ class User(db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def json_dict(self):
+        # Returns a Python dictionary of public attributes
+        dct = {
+            'username': self.username,
+            'fullname': self.fullname,
+            'age': self.age
+        }
+        return dct
 
 class Token(db.Model):
     id = db.Column(db.Integer, primary_key=True)

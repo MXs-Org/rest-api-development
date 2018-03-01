@@ -157,7 +157,13 @@ def expire_token():
 
 @app.route("/users", methods=['POST'])
 def retrieve_user_info():
-    pass
+    if request.form['token']:
+        token = Token.query.filter_by(token=request.form['token']).first()
+        if token:
+            user_id = token.user_id
+            user = User.query.filter_by(id=user_id).first()
+            return make_json_response(user.json_dict())
+    return make_json_response("Invalid authentication token", False)
 
 #############################
 ## Diary Routes
