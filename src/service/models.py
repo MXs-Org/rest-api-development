@@ -8,7 +8,7 @@ class User(db.Model):
     fullname = db.Column(db.String(128))
     age = db.Column(db.Integer)
     entries = db.relationship('Entry', backref='author', lazy='dynamic')
-    token = db.relationship('Token', backref='user', lazy='dynamic', uselist=False)
+    token = db.relationship('Token', backref='user', uselist=False)
 
     def __repr__(self):
         return "<User {}>".format(self.username)
