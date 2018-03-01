@@ -87,6 +87,12 @@ def add_user_token():
         db.session.commit()
         return new_uuid
 
+def remove_user_token(token_str):
+    # Removes the token from Token table
+    token = Token.query.filter_by(token=token_str).first()
+    db.session.delete(token)
+    db.session.commit()
+
 #############################
 ## Admin Routes
 #############################
@@ -141,7 +147,13 @@ def auth_user():
 
 @app.route("/users/expire", methods=['POST'])
 def expire_token():
-    pass
+    if request.form['token']:
+        token = Token.query.filter_by(token=request.form['token']).first()
+        if token:
+            token_str = token.token
+            remove_user_token(token_str)
+            return make_json_response(None)
+    return make_json_false_response()
 
 @app.route("/users", methods=['POST'])
 def retrieve_user_info():
