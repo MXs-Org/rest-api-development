@@ -24,7 +24,7 @@ CORS(app)
 db.init_app(app)
 
 # Remember to update this list
-ENDPOINT_LIST = ['/', '/meta/heartbeat', '/meta/members']
+ENDPOINT_LIST = ['/', '/meta/heartbeat', '/meta/members', '/diary', '/diary/create', '/diary/delete', 'diary/permission']
 
 #############################
 ## Helper functions
@@ -63,7 +63,7 @@ def verify_user_registration(request):
     return False
 
 #############################
-## Routes
+## Admin Routes
 #############################
 
 @app.route("/")
@@ -71,12 +71,10 @@ def index():
     """Returns a list of implemented endpoints."""
     return make_json_response(ENDPOINT_LIST)
 
-
 @app.route("/meta/heartbeat")
 def meta_heartbeat():
     """Returns true"""
     return make_json_response(None)
-
 
 @app.route("/meta/members")
 def meta_members():
@@ -84,6 +82,10 @@ def meta_members():
     with open("./team_members.txt") as f:
         team_members = f.read().strip().split("\n")
     return make_json_response(team_members)
+
+#############################
+## Users Routes
+#############################
 
 @app.route("/users/register", methods=['POST'])
 def register_user():
@@ -110,6 +112,34 @@ def expire_token():
 @app.route("/users", methods=['POST'])
 def retrieve_user_info():
     pass
+
+#############################
+## Diary Routes
+#############################
+
+@app.route('/diary', methods=['GET', 'POST'])
+def diary():
+    if request.method == 'GET':
+        # TODO retrieve all public entries
+        return "get /diary"
+    else:
+        # TODO retrieve all entries of authenicated user
+        return "post /diary"
+
+@app.route('/diary/create', methods=['POST'])
+def diary_create():
+    # TODO create a new diary entry
+    return "create!"
+
+@app.route('/diary/delete', methods=['POST'])
+def diary_delete():
+    # TODO delete an existing diary entry
+    return "delete!"
+
+@app.route('/diary/permission', methods=['POST'])
+def diary_permission():
+    # TODO change permission of diary entry
+    return "change permissions!"
 
 if __name__ == '__main__':
     # Change the working directory to the script directory
