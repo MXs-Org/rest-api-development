@@ -132,7 +132,7 @@ def register_user():
             db.session.commit()
         except Exception as e:
             return make_json_response("User already exists!", False)
-        return make_json_response(None)
+        return make_json_response(None, code=201)
 
 @app.route("/users/authenticate", methods=['POST'])
 def auth_user():
@@ -163,7 +163,7 @@ def retrieve_user_info():
             user_id = token.user_id
             user = User.query.filter_by(id=user_id).first()
             return make_json_response(user.json_dict())
-    return make_json_response("Invalid authentication token", False)
+    return make_json_response("Invalid authentication token.", False)
 
 #############################
 ## Diary Routes
