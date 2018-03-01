@@ -73,19 +73,11 @@ def make_json_false_response():
     )
     return response
 
-def verify_user_registration():
-    # Checks if registration fields are all filled in
-    if len(request.form) < 4:
-        return False
-    elif (request.form['username'] and request.form['password'] 
-        and request.form['fullname'] and request.form['age']):
-        return True
-    return False
-
 def add_user_token():
     # Creates a fresh UUID and stores it in the database
     # If a token for a user_id already exists, return the existing token
-    user_id = User.query.filter_by(username=request.form['username']).first().id
+    req_data = request.get_json()
+    user_id = User.query.filter_by(username=req_data['username']).first().id
     user_token = Token.query.filter_by(user_id=user_id).first()
     if user_token:
         return user_token.token
@@ -130,34 +122,37 @@ def meta_members():
 @app.route("/users/register", methods=['POST'])
 def register_user():
     if request.method == 'POST':
-        if not verify_user_registration():
+        req_data = request.get_json()
+        if not all(k in req_data.keys() for k in ['username', 'password', 'fullname', 'age']):
             return make_json_response("Please fill in all the required information", False)
         try:
-            user = User(username=request.form['username'], 
-                        fullname=request.form['fullname'], 
-                        age=request.form['age'])
-            user.set_password(request.form['password'])
+            user = User(username=req_data['username'], 
+                        fullname=req_data['fullname'], 
+                        age=req_data['age'])
+            user.set_password(req_data['password'])
             db.session.add(user)
             db.session.commit()
-        except Exception as e:
+        except:
             return make_json_response("User already exists!", False)
         return make_json_response(None, code=201)
 
 @app.route("/users/authenticate", methods=['POST'])
 def auth_user():
-    if not (request.form['username'] and request.form['password']):
+    req_data = request.get_json()
+    if not all(k in req_data.keys() for k in ['username', 'password']):
         return make_json_response("Please fill in all the required information", False)
-    auth_user = User.query.filter_by(username=request.form['username']).first()
+    auth_user = User.query.filter_by(username=req_data['username']).first()
     if auth_user:
-        if auth_user.check_password(request.form['password']):
+        if auth_user.check_password(req_data['password']):
             token = add_user_token()
             return make_json_response(token)
     return make_json_false_response()
 
 @app.route("/users/expire", methods=['POST'])
 def expire_token():
-    if request.form['token']:
-        token = Token.query.filter_by(token=request.form['token']).first()
+    req_data = request.get_json()
+    if req_data['token']:
+        token = Token.query.filter_by(token=req_data['token']).first()
         if token:
             token_str = token.token
             remove_user_token(token_str)
@@ -166,8 +161,9 @@ def expire_token():
 
 @app.route("/users", methods=['POST'])
 def retrieve_user_info():
-    if request.form['token']:
-        token = Token.query.filter_by(token=request.form['token']).first()
+    req_data = request.get_json()
+    if req_data['token']:
+        token = Token.query.filter_by(token=req_data['token']).first()
         if token:
             user_id = token.user_id
             user = User.query.filter_by(id=user_id).first()
@@ -208,8 +204,7 @@ if __name__ == '__main__':
     dname = os.path.dirname(abspath)
     os.chdir(dname)
 
-    # Checks if the sqlite database already exists
-    # TODO: need to change this when we move back to MySQL      
+    # If sqlite database does not exist, create it
     if not os.path.isfile('/tmp/test.db'):
         setup_database(app)
     app.run(debug=False, port=8080, host="0.0.0.0")
