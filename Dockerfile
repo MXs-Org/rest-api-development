@@ -5,7 +5,8 @@ RUN apt-get install -y apache2
 RUN pip install -U pip
 RUN pip install -U flask
 RUN pip install -U flask-cors
-RUN pip install flask-mysql
+RUN pip install flask-sqlalchemy
+ENV FLASK_APP app.py
 RUN echo "ServerName localhost  " >> /etc/apache2/apache2.conf
 RUN echo "$user     hard    nproc       20" >> /etc/security/limits.conf
 ADD ./src/service /service
