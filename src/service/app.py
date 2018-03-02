@@ -6,19 +6,18 @@ import datetime
 from uuid import uuid4
 
 from flask_sqlalchemy import SQLAlchemy
-from database import db
 from flask import Flask, request
 from flask_cors import CORS
 
+from database import db
 from models import User, Token, Entry
 
 ##########################################
 ## Set up Flask application and database
 ##########################################
 app = Flask(__name__)
+# TODO: change this to False when submitting
 app.config['DEBUG'] = True
-# TODO: migrate to MySQL after development is done, or maybe not?
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/diary_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Enable cross origin sharing for all endpoints
