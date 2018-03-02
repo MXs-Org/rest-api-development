@@ -40,9 +40,22 @@ class Entry(db.Model):
     title = db.Column(db.String(300))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # author = db.Column(db.String(64), index=True) # username of author, maybe use foreign key user_id
-    publish_date = db.Column(db.DateTime)
+    publish_date = db.Column(db.String(26))
     public = db.Column(db.Boolean)
     text = db.Column(db.Text)
 
     def __repr__(self):
         return "<Diary Entry {}>".format(self.title)
+
+    def json_dict(self):
+        # Returns a Python dictionary of public attributes
+        username = User.query.filter_by(id=self.user_id).first().username
+        dct = {
+            'id': self.id,
+            'title': self.title,
+            'author': username,
+            'publish_date': self.publish_date,
+            'public': self.public,
+            'text': self.text
+        }
+        return dct
