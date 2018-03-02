@@ -258,10 +258,21 @@ def diary_permission():
     db.session.commit()
     return make_json_response(None)
 
+#############################
+## UI Routes
+#############################
+
 @app.route('/diary/create_form')
 def diary_create_form():
     return render_template('create_entry.html')
 
+@app.route('/login_form')
+def users_login_form():
+    return render_template('login_form.html')
+
+@app.route('/register_form')
+def users_login_form():
+    return render_template('register_form.html')
 
 if __name__ == '__main__':
     # Change the working directory to the script directory
