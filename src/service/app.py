@@ -2,6 +2,7 @@
 
 import json
 import os
+import datetime
 from uuid import uuid4
 
 from flask_sqlalchemy import SQLAlchemy
@@ -94,6 +95,31 @@ def remove_user_token(token_str):
     db.session.delete(token)
     db.session.commit()
 
+def check_valid_token(token_str):
+    # Checks if the token is valid
+    token = Token.query.filter_by(token=token_str).first()
+    return bool(token)
+
+def retrieve_user_id(token_str):
+    # Returns the user_id of the user who currently owns token_str
+    token = Token.query.filter_by(token=token_str).first()
+    user_id = token.user_id
+    return user_id
+
+def create_diary_entry(req_data):
+    # Gets attributes of entry
+    title = req_data['title']
+    user_id = retrieve_user_id(req_data['token'])
+    publish_date = datetime.datetime.utcnow().isoformat()
+    public = req_data['public']
+    text = req_data['text']
+    # Adds entry to database
+    entry = Entry(title=title, user_id=user_id, publish_date=publish_date, 
+                    public=public, text=text)
+    db.session.add(entry)
+    db.session.commit()
+    return entry.id
+
 #############################
 ## Admin Routes
 #############################
@@ -177,16 +203,26 @@ def retrieve_user_info():
 @app.route('/diary', methods=['GET', 'POST'])
 def diary():
     if request.method == 'GET':
-        # TODO retrieve all public entries
-        return "get /diary"
+        entries = Entry.query.filter_by(public=True).all()
+        return make_json_response([e.json_dict() for e in entries])
     else:
-        # TODO retrieve all entries of authenicated user
-        return "post /diary"
+        req_data = request.get_json()
+        if check_valid_token(req_data['token']):
+            user_id = retrieve_user_id(req_data['token'])
+            entries = Entry.query.filter_by(user_id=user_id).all()
+            return make_json_response([e.json_dict() for e in entries])
+        return make_json_response("Invalid authentication token.", False)
 
 @app.route('/diary/create', methods=['POST'])
 def diary_create():
-    # TODO create a new diary entry
-    return "create!"
+    req_data = request.get_json()
+    if not all(k in req_data.keys() for k in ['token', 'title', 'public', 'text']):
+        return make_json_response("Invalid authentication token.", False)
+    # Check if token is valid
+    if check_valid_token(req_data['token']):
+        entry_id = create_diary_entry(req_data)
+        return make_json_response({'id': entry_id}, status=201)
+    return make_json_response("Invalid authentication token.", False)
 
 @app.route('/diary/delete', methods=['POST'])
 def diary_delete():
