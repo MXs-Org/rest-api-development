@@ -174,7 +174,7 @@ def auth_user():
     if auth_user:
         if auth_user.check_password(req_data['password']):
             token = add_user_token()
-            return make_json_response(token)
+            return make_json_response({"token": token}) #TODO double check this response
     return make_json_false_response()
 
 @app.route("/users/expire", methods=['POST'])

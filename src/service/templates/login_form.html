@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block form_content %}
-<form id="register-form" class="col s8">
+<form id="login-form" name="login-form" method="post" action="/users/authenticate" novalidate="novalidate" class="col s12">
   <div class="row">
     <div class="input-field col s6">
       <input  id="username" type="text" class="validate">
@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="row">
-    <button class="btn waves-effect waves-light left-align" type="submit" name="action">Submit
+    <button id="submit" class="btn waves-effect waves-light left-align" type="submit" name="action">Submit
       <i class="material-icons right">send</i>
     </button>
   </div>
