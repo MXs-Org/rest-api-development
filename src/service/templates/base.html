@@ -11,14 +11,24 @@
 </head>
 <body>
   <!-- TODO navbar change the links -->
-  <nav>
-    <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Secret Diary</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="sass.html">Sass</a></li>
-        <li><a href="badges.html">Components</a></li>
-        <li><a href="collapsible.html">JavaScript</a></li>
+  <nav class="purple lighten-2" role="navigation">
+    <!-- TODO update secret diary navbar links -->
+    <div class="nav-wrapper container"><a id="logo-container" href="index.html" class="brand-logo">Secret Diary</a>
+      <ul class="right hide-on-med-and-down">
+        <!-- TODO add if block for login or not and show different nav bar links-->
+        <!-- For alrdy login -->
+        <li><a href="#">Create</a></li>
+        <li><a href="#">My Posts</a></li>
+        <li><a href="#">Logout</a></li>
+
+        <!-- For not login users -->
+        <li><a href="#">Login</a></li>
       </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
   </nav>
   <div class="container">

@@ -6,7 +6,7 @@ import datetime
 from uuid import uuid4
 
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 
 from database import db
@@ -257,6 +257,11 @@ def diary_permission():
     entry.public = req_data['public']
     db.session.commit()
     return make_json_response(None)
+
+@app.route('/diary/create_form')
+def diary_create_form():
+    return render_template('create_entry.html')
+
 
 if __name__ == '__main__':
     # Change the working directory to the script directory
