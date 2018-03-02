@@ -25,16 +25,16 @@ CORS(app)
 db.init_app(app)
 
 # Remember to update this list
-ENDPOINT_LIST = ['/', 
-                '/meta/heartbeat', 
-                '/meta/members', 
+ENDPOINT_LIST = ['/',
+                '/meta/heartbeat',
+                '/meta/members',
                 '/users/register',
                 '/users/authenticate',
                 '/users/expire',
                 '/users',
-                '/diary', 
-                '/diary/create', 
-                '/diary/delete', 
+                '/diary',
+                '/diary/create',
+                '/diary/delete',
                 '/diary/permission']
 
 #############################
@@ -64,7 +64,7 @@ def make_json_response(data, status=True, code=200):
     return response
 
 def make_json_false_response():
-    # Helper function just to return False, since it's not handled by 
+    # Helper function just to return False, since it's not handled by
     # make_json_response, which requires an explicit Error message
     response = app.response_class(
         response=json.dumps({'status': False}),
@@ -113,7 +113,7 @@ def create_diary_entry(req_data):
     public = req_data['public']
     text = req_data['text']
     # Adds entry to database
-    entry = Entry(title=title, user_id=user_id, publish_date=publish_date, 
+    entry = Entry(title=title, user_id=user_id, publish_date=publish_date,
                     public=public, text=text)
     db.session.add(entry)
     db.session.commit()
@@ -151,8 +151,8 @@ def register_user():
         if not all(k in req_data.keys() for k in ['username', 'password', 'fullname', 'age']):
             return make_json_response("Please fill in all the required information", False)
         try:
-            user = User(username=req_data['username'], 
-                        fullname=req_data['fullname'], 
+            user = User(username=req_data['username'],
+                        fullname=req_data['fullname'],
                         age=req_data['age'])
             user.set_password(req_data['password'])
             db.session.add(user)
@@ -225,13 +225,38 @@ def diary_create():
 
 @app.route('/diary/delete', methods=['POST'])
 def diary_delete():
-    # TODO delete an existing diary entry
-    return "delete!"
+    req_data = request.get_json()
+    if not all(k in req_data.keys() for k in ['token', 'id']):
+        return make_json_response("Invalid authentication token.", False)
+    if not check_valid_token(req_data['token']):
+        return make_json_response("Invalid authentication token.", False)
+
+    entry = Entry.query.get(req_data['id']) # TODO maybe use get_or_404
+    req_user_id = retrieve_user_id(req_data['token'])
+    if entry.user_id != req_user_id: # only owner of entry can delete entry
+        return make_json_response("Invalid authentication token.", False)
+
+    db.session.delete(entry)
+    db.session.commit()
+
+    return make_json_response(None)
 
 @app.route('/diary/permission', methods=['POST'])
 def diary_permission():
-    # TODO change permission of diary entry
-    return "change permissions!"
+    req_data = request.get_json()
+    if not all(k in req_data.keys() for k in ['token', 'id', 'public']):
+        return make_json_response("Invalid authentication token.", False)
+    if not check_valid_token(req_data['token']):
+        return make_json_response("Invalid authentication token.", False)
+
+    entry = Entry.query.get(req_data['id']) # TODO maybe use get_or_404
+    req_user_id = retrieve_user_id(req_data['token'])
+    if entry.user_id != req_user_id: # only owner of entry can change the permission
+        return make_json_response("Invalid authentication token.", False)
+
+    entry.public = req_data['public']
+    db.session.commit()
+    return make_json_response(None)
 
 if __name__ == '__main__':
     # Change the working directory to the script directory
