@@ -271,7 +271,7 @@ def users_login_form():
     return render_template('login_form.html')
 
 @app.route('/register_form')
-def users_login_form():
+def users_register_form():
     return render_template('register_form.html')
 
 if __name__ == '__main__':
