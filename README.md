@@ -54,21 +54,6 @@ sudo ./run.sh
 
 **Please consult your assignment hand-out for detailed setup information.**
 
-## Accessing Database
-To access and manipulate the database outside the app:
-
-1. Start the server with ./run.sh
-2. Open another terminal window and enter the commands below:
-
-```
-sudo docker exec -it diary_db_container bash
-mysql -u root -p
-
-```
-Enter the password to access the database when promtped.
-
-
-
 ## Grading
 
 The implementation will be graded in an automated fashion on an Ubuntu 16.04
@@ -118,7 +103,12 @@ Please fill out this section with details relevant to your team.
 
 #### Question 1: Briefly describe the web technology stack used in your implementation.
 
-Answer: Please replace this sentence with your answer.
+Answer:
+On the backend, we used the Flask microframework for the web application, 
+sqlite as the database and Flask-SQLAlchemy as the database ORM.
+
+As for the frontend, we used basic HTML, Bootstrap CSS for styling, and mostly
+vanilla JS without any frontend libraries or frameworks.
 
 #### Question 2: Are there any security considerations your team thought about?
 
@@ -145,8 +135,7 @@ Answer: Please replace this sentence with your answer.
 #### Please declare your individual contributions to the assignment:
 
 1. Chai Ming Xuan
-    - Integrated feature x into component y
-    - Implemented z
+    - Implemented the Users and some of Diary routes
 2. Tan Yi Yan
     - Wrote the front-end code
 3. Tan Wee Chen William
