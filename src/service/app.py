@@ -143,6 +143,10 @@ def meta_members():
 #############################
 ## Users Routes
 #############################
+@app.route("/allusers") # TODO debug api, to remove before submission
+def all_users():
+    users = User.query.all()
+    return make_json_response([u.json_dict() for u in users])
 
 @app.route("/users/register", methods=['POST'])
 def register_user():

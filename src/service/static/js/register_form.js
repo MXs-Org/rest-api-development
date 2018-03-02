@@ -4,20 +4,24 @@ function handleRegisterFormSubmit() {
         var password = $('#password').val();
         var fullname = $('#fullname').val();
         var age = $('#age').val();
-
         $.ajax({
           url: '/users/register',
           type: "POST",
           dataType: 'json',
-          data: JSON.stringify({data: {"username": username, "password": password, "fullname": fullname, "age": age}}),
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify({"username": username, "password": password, "fullname": fullname, "age": age}),
           success: function(result) {
-            console.log(result);
+            if(result["status"] == true) {
+              Materialize.toast("Your account has been created!", 4000);
+              window.location.href = "/diary";
+            } else {
+              Materialize.toast(result["error"], 4000);
+            }
           },
           error: function(xhr, resp, text) {
-            console.log(xhr, resp, text);
+            Materialize.toast("Something went horribly wrong!", 4000);
           }
         });
-        // alert("test");
         event.preventDefault();
       }
     );
