@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col s12">
+    {% block form_title %}{% endblock %}
+    <div class="card-panel">
+      <div class="row">
+        {% block form_content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
