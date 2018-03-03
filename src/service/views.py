@@ -35,6 +35,10 @@ def index():
 def diary_entries():
     return render_template('diary_index.html')
 
+@views.route('/diary/my_entries')
+def diary_my_entries():
+    return render_template('my_entries.html')
+
 @views.route('/diary/create_form')
 def diary_create_form():
     return render_template('create_entry.html')
