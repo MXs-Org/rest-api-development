@@ -2,7 +2,7 @@ function handleCreateEntrySubmit() {
     $("#submit").on('click', function(event) {
         var token = readToken();
         var title = $('#title').val();
-        var public = $('#public').val();
+        var public = $('#public').is(':checked');
         var text = $('#text').val();
         
         $.ajax({
