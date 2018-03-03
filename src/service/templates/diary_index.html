@@ -1,21 +1,28 @@
-{# Page is rendered if the user is not logged in and visits / #}
+{% extends "base.html" %}
 
-{% extends "base_form.html" %}
+{% block content %}
+  <!-- container to be filled with entry cards by handlerbars -->
+  <div id="entries-container" class="table-responsive"></div>
 
-{% block form_title %}
-<h5>Welcome</h5>
-{% endblock %}
+  {% raw %}
+    <!-- handlerbars template for each entry -->
+    <script id="entry-template" type="text/x-handlebars-template">
+      {{#each result}}
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">{{title}}</span>
+          <p>{{text}}</p>
+          <p class="grey-text text-lighten-2">{{#if public}} Public {{else}} Private {{/if}} entry published by {{author}} on {{publish_date}}</p>
+        </div>
+      </div>
+      {{/each}}
+    </script>
+  {% endraw %}
 
-{% block form_content %}
-This block is supposed to contain all the diary entries
-
-If authenticated, it will show your entries only
-If unauthenticated, it will only show the public entries
-
-How to code that, is a nightmare in itself
 {% endblock %}
 
 {% block additional_scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/auth.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/diary_index.js') }}"></script>
 {% endblock %}
