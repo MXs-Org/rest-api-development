@@ -199,6 +199,15 @@ def retrieve_user_info():
             return make_json_response(user.json_dict())
     return make_json_response("Invalid authentication token.", False)
 
+@app.route("/users/check", methods=['POST'])
+def check_valid_token():
+    req_data = request.get_json()
+    if req_data['token']:
+        token = Token.query.filter_by(token=req_data['token']).first()
+        if token:
+            return make_json_response(None)
+    return make_json_false_response()
+
 #############################
 ## Diary Routes
 #############################
