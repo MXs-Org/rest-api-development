@@ -5,7 +5,7 @@ function handleRegisterFormSubmit() {
         var fullname = $('#fullname').val();
         var age = $('#age').val();
         $.ajax({
-          url: '/users/register',
+          url: 'http://localhost:8080/users/register',
           type: "POST",
           dataType: 'json',
           contentType: "application/json; charset=utf-8",
@@ -13,7 +13,7 @@ function handleRegisterFormSubmit() {
           success: function(result) {
             if(result["status"] == true) {
               Materialize.toast("Your account has been created!", 4000);
-              window.location.href = "/diary";
+              window.location.href = "/login_form";
             } else {
               Materialize.toast(result["error"], 4000);
             }

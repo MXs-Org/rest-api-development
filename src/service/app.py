@@ -47,7 +47,7 @@ def setup_database(app):
 
 def make_json_response(data, status=True, code=200):
     """Utility function to create the JSON responses."""
-
+    
     to_serialize = {}
     if status:
         to_serialize['status'] = True
