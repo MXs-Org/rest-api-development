@@ -1,4 +1,15 @@
-function handleRegisterFormSubmit() {
+// Handles all the code for localstorage cookies
+
+function saveToken(token) {
+  localStorage.token = token;
+}
+
+function readToken() {
+    // Reads the token from localstorage
+    return localStorage.token || "";
+}
+
+function checkAuthenticated() {
     $("#submit").on('click', function(event) {
         var username = $('#username').val();
         var password = $('#password').val();
@@ -13,7 +24,7 @@ function handleRegisterFormSubmit() {
           success: function(result) {
             if(result["status"] == true) {
               Materialize.toast("Your account has been created!", 4000);
-              window.location.href = "/login_form";
+              window.location.href = "/diary";
             } else {
               Materialize.toast(result["error"], 4000);
             }
@@ -28,5 +39,6 @@ function handleRegisterFormSubmit() {
 }
 
 $(document).ready(function() {
-  handleRegisterFormSubmit();
+  // Checks if user has a token set in localstorage.token
+  checkAuthenticated();
 });

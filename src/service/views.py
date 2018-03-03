@@ -27,6 +27,14 @@ ENDPOINT_LIST = ['/',
 ## UI Routes
 #############################
 
+@views.route('/')
+def index():
+    return render_template('not_logged_in.html')
+
+@views.route('/diary')
+def diary_entries():
+    return render_template('diary_index.html')
+
 @views.route('/diary/create_form')
 def diary_create_form():
     return render_template('create_entry.html')
