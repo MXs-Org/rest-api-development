@@ -17,6 +17,11 @@ var MY_ENTRIES_METHOD = {
   }
 };
 
+function deleteEntry(){
+  $("#delete-entry").on('click', function(event) {
+  }
+}
+
 $(document).ready(function(){
   MY_ENTRIES_METHOD.loadEntryData();
 });
