@@ -14,7 +14,7 @@ function handleLoginFormSubmit() {
               saveToken(response['result']['token']);
               window.location.href = "/diary";
             } else {
-              Materialize.toast(response["error"], 4000);
+              Materialize.toast("Authentication failed", 4000);
             }
           },
           error: function(xhr, resp, text) {
