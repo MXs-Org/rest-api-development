@@ -1,12 +1,12 @@
 // Handles all the code for localstorage cookies
 
 function saveToken(token) {
-  localStorage.token = token;
+  localStorage.setItem("token", token);
 }
 
 function readToken() {
     // Reads the token from localstorage
-    return localStorage.token || "";
+    return localStorage.getItem("token");
 }
 
 function checkAuthenticated() {

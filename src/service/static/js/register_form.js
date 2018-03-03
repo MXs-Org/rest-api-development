@@ -10,12 +10,12 @@ function handleRegisterFormSubmit() {
           dataType: 'json',
           contentType: "application/json; charset=utf-8",
           data: JSON.stringify({"username": username, "password": password, "fullname": fullname, "age": age}),
-          success: function(result) {
-            if(result["status"] == true) {
+          success: function(response) {
+            if(response["status"] == true) {
               Materialize.toast("Your account has been created!", 4000);
               window.location.href = "/login_form";
             } else {
-              Materialize.toast(result["error"], 4000);
+              Materialize.toast(response["error"], 4000);
             }
           },
           error: function(xhr, resp, text) {

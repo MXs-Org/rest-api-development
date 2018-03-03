@@ -3,18 +3,18 @@ function handleLoginFormSubmit() {
         var username = $('#username').val();
         var password = $('#password').val();
         $.ajax({
-          url: '/users/authenticate',
+          url: 'http://localhost:8080/users/authenticate',
           type: "POST",
           dataType: 'json',
           contentType: "application/json; charset=utf-8",
           data: JSON.stringify({"username": username, "password": password}),
-          success: function(result) {
-            console.log(result);
-            if(result["status"] == true) {
-              Materialize.toast(result['token'], 4000);
-              // window.location.href = "/diary";
+          success: function(response) {
+            if(response["status"] == true) {
+              Materialize.toast("Logging in...", 4000);
+              saveToken(response['result']['token']);
+              window.location.href = "/diary";
             } else {
-              Materialize.toast(result["error"], 4000);
+              Materialize.toast(response["error"], 4000);
             }
           },
           error: function(xhr, resp, text) {
