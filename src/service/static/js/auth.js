@@ -9,9 +9,15 @@ function readToken() {
     return localStorage.getItem("token");
 }
 
+function deleteToken() {
+  localStorage.removeItem("token");
+}
+
 function checkAuthenticated() {
-  // TODO: implement this
-  return ""
+  if (readToken() == null) {
+    return false;
+  }
+  return true;
 }
 
 $(document).ready(function() {
