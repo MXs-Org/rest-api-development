@@ -200,7 +200,7 @@ def retrieve_user_info():
     return make_json_response("Invalid authentication token.", False)
 
 @app.route("/users/check", methods=['POST'])
-def check_valid_token():
+def retrieve_token_validity():
     req_data = request.get_json()
     if req_data['token']:
         token = Token.query.filter_by(token=req_data['token']).first()

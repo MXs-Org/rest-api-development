@@ -21,7 +21,8 @@ views.config['DEBUG'] = True
 ENDPOINT_LIST = ['/',
                 '/diary/create_form',
                 '/login_form',
-                '/register_form']
+                '/register_form',
+                '/diary/my_entries']
 
 #############################
 ## UI Routes

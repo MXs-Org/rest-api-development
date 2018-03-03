@@ -1,8 +1,5 @@
 var MY_ENTRIES_METHOD = {
   handlerData:function(resJSON){
-    console.log(resJSON);
-    console.log(readToken);
-    console.log($("#entry-template").html());
       var templateSource   = $("#entry-template").html(),
           template = Handlebars.compile(templateSource),
           entryHTML = template(resJSON);
@@ -21,6 +18,5 @@ var MY_ENTRIES_METHOD = {
 };
 
 $(document).ready(function(){
-  console.log("test");
   MY_ENTRIES_METHOD.loadEntryData();
 });
