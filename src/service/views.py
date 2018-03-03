@@ -15,15 +15,6 @@ views = Flask(__name__)
 # TODO: change this to False when submitting
 views.config['DEBUG'] = True
 
-# Enable cross origin sharing for all endpoints
-
-# Remember to update this list
-ENDPOINT_LIST = ['/',
-                '/diary/create_form',
-                '/login_form',
-                '/register_form',
-                '/diary/my_entries']
-
 #############################
 ## UI Routes
 #############################
