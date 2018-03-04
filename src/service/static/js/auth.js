@@ -18,6 +18,8 @@ function renderNavbar() {
   // If token is not valid, set the token to null
   token = readToken()
   console.log(token);
+function checkIfLoggedIn(){
+  token = readToken();
   $.ajax({
     url: 'http://localhost:8080/users/check',
     type: "POST",
@@ -26,26 +28,10 @@ function renderNavbar() {
     data: JSON.stringify({"token": token}),
     success: function(response) {
       if(response["status"] == true) {
-        console.log("changing html")
-        $('#navbar').html(`
-          <li><a href="/diary/create_form">Create</a></li>
-          <li><a href="/diary/my_entries">My Posts</a></li>
-          <li><a href="#">All Users</a></li>
-          <li><a href="#" id="logout" onclick="handleLogout()">Logout</a></li>
-        `)
-      } else {
-        // Invalid token or not logged in
-        $('#navbar').html(`
-          <li><a href="#">Public Posts</a></li>
-          <li><a href="/register_form">Register</a></li>
-          <li><a href="/login_form">Login</a></li>
-        `)
-      }
+        window.location.href = "/diary"
+      } 
     }
   });
 }
 
-$(document).ready(function() {
-  // Renders the navigation bar according to the user's authentication status
-  renderNavbar();
-});
+checkIfLoggedIn();
