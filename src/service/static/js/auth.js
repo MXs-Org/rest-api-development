@@ -29,9 +29,9 @@ function renderNavbar() {
         console.log("changing html")
         $('#navbar').html(`
           <li><a href="/diary/create_form">Create</a></li>
-          <li><a href="#">My Posts</a></li>
+          <li><a href="/diary/my_entries">My Posts</a></li>
           <li><a href="#">All Users</a></li>
-          <li><a href="#" id="logout">Logout</a></li>
+          <li><a href="#" id="logout" onclick="handleLogout()">Logout</a></li>
         `)
       } else {
         // Invalid token or not logged in
