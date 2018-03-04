@@ -1,4 +1,4 @@
-function checkIfLoggedIn(){
+function checkIfNotLoggedIn(){
   token = readToken();
   $.ajax({
     url: 'http://localhost:8080/users/check',
@@ -7,11 +7,11 @@ function checkIfLoggedIn(){
     contentType: "application/json; charset=utf-8",
     data: JSON.stringify({"token": token}),
     success: function(response) {
-      if(response["status"] == true) {
-        window.location.href = "/diary"
+      if(response["status"] == false) {
+        window.location.href = "/login_form"
       } 
     }
   });
 }
 
-checkIfLoggedIn();
+checkIfNotLoggedIn();
