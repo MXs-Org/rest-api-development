@@ -1,5 +1,5 @@
 function handleLogout() {
-  console.log("logging out....");
+  console.log("Logging out....");
   var token = readToken();
   console.log(token);
   $.ajax({
@@ -40,7 +40,6 @@ function renderNavbar() {
         $('#navbar').html(`
           <li><a href="/diary/create_form">Create</a></li>
           <li><a href="/diary/my_entries">My Posts</a></li>
-          <li><a href="#">All Users</a></li>
           <li><a href="#" id="logout" onclick="handleLogout()">Logout</a></li>
         `)
       } else {
