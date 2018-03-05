@@ -1,0 +1,37 @@
+{% extends "base_form.html" %}
+
+{% block form_title %}
+<h5>Create Diary Entry </h5>
+{% endblock %}
+
+{% block form_content %}
+<form class="col s12">
+  <div class="row">
+    <div class="input-field col s12">
+      <input id="title" type="text">
+      <label for="title">Title</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s12">
+      <textarea id="text" class="materialize-textarea"></textarea>
+      <label for="text">Entry</label>
+    </div>
+  </div>
+  <div class="row">
+    <p>
+      <input type="checkbox" class="filled-in" id="public" />
+      <label for="public">Make Entry Public</label>
+    </p>
+    <button id="submit" class="btn waves-effect waves-light left-align" type="submit" name="action">Submit
+      <i class="material-icons right">send</i>
+    </button>
+  </div>
+</form>
+{% endblock %}
+
+{% block additional_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/create_entry.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/redirect.js') }}"></script>
+{% endblock %}

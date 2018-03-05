@@ -6,7 +6,7 @@ import datetime
 from uuid import uuid4
 
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 
 from database import db
@@ -25,16 +25,17 @@ CORS(app)
 db.init_app(app)
 
 # Remember to update this list
-ENDPOINT_LIST = ['/', 
-                '/meta/heartbeat', 
-                '/meta/members', 
+ENDPOINT_LIST = ['/',
+                '/meta/heartbeat',
+                '/meta/members',
                 '/users/register',
                 '/users/authenticate',
                 '/users/expire',
                 '/users',
-                '/diary', 
-                '/diary/create', 
-                '/diary/delete', 
+                '/users/check',
+                '/diary',
+                '/diary/create',
+                '/diary/delete',
                 '/diary/permission']
 
 #############################
@@ -64,7 +65,7 @@ def make_json_response(data, status=True, code=200):
     return response
 
 def make_json_false_response():
-    # Helper function just to return False, since it's not handled by 
+    # Helper function just to return False, since it's not handled by
     # make_json_response, which requires an explicit Error message
     response = app.response_class(
         response=json.dumps({'status': False}),
@@ -113,11 +114,16 @@ def create_diary_entry(req_data):
     public = req_data['public']
     text = req_data['text']
     # Adds entry to database
-    entry = Entry(title=title, user_id=user_id, publish_date=publish_date, 
+    entry = Entry(title=title, user_id=user_id, publish_date=publish_date,
                     public=public, text=text)
     db.session.add(entry)
     db.session.commit()
     return entry.id
+
+def check_empty_entry(req_data):
+    title = req_data['title'];
+    text = req_data['text'];
+    return (title.strip() == "" or text.strip() == "") 
 
 #############################
 ## Admin Routes
@@ -143,7 +149,6 @@ def meta_members():
 #############################
 ## Users Routes
 #############################
-
 @app.route("/users/register", methods=['POST'])
 def register_user():
     if request.method == 'POST':
@@ -151,8 +156,8 @@ def register_user():
         if not all(k in req_data.keys() for k in ['username', 'password', 'fullname', 'age']):
             return make_json_response("Please fill in all the required information", False)
         try:
-            user = User(username=req_data['username'], 
-                        fullname=req_data['fullname'], 
+            user = User(username=req_data['username'],
+                        fullname=req_data['fullname'],
                         age=req_data['age'])
             user.set_password(req_data['password'])
             db.session.add(user)
@@ -170,7 +175,7 @@ def auth_user():
     if auth_user:
         if auth_user.check_password(req_data['password']):
             token = add_user_token()
-            return make_json_response(token)
+            return make_json_response({"token": token})
     return make_json_false_response()
 
 @app.route("/users/expire", methods=['POST'])
@@ -195,6 +200,15 @@ def retrieve_user_info():
             return make_json_response(user.json_dict())
     return make_json_response("Invalid authentication token.", False)
 
+@app.route("/users/check", methods=['POST'])
+def retrieve_token_validity():
+    req_data = request.get_json()
+    if req_data['token']:
+        token = Token.query.filter_by(token=req_data['token']).first()
+        if token:
+            return make_json_response(None)
+    return make_json_false_response()
+
 #############################
 ## Diary Routes
 #############################
@@ -218,20 +232,53 @@ def diary_create():
     if not all(k in req_data.keys() for k in ['token', 'title', 'public', 'text']):
         return make_json_response("Invalid authentication token.", False)
     # Check if token is valid
+    if check_empty_entry(req_data):
+        return make_json_response("Empty title or entry!", status=False, code=200)
     if check_valid_token(req_data['token']):
         entry_id = create_diary_entry(req_data)
-        return make_json_response({'id': entry_id}, status=201)
+        return make_json_response({'id': entry_id}, code=201)
     return make_json_response("Invalid authentication token.", False)
 
 @app.route('/diary/delete', methods=['POST'])
 def diary_delete():
-    # TODO delete an existing diary entry
-    return "delete!"
+    req_data = request.get_json()
+    if not all(k in req_data.keys() for k in ['token', 'id']):
+        return make_json_response("Invalid authentication token.", False)
+    if not check_valid_token(req_data['token']):
+        return make_json_response("Invalid authentication token.", False)
+
+    entry = Entry.query.get(req_data['id'])
+    if entry is None:
+         return make_json_response("Entry does not exist.", False)
+
+    req_user_id = retrieve_user_id(req_data['token'])
+    if entry.user_id != req_user_id: # only owner of entry can delete entry
+        return make_json_response("Invalid authentication token.", False)
+
+    db.session.delete(entry)
+    db.session.commit()
+
+    return make_json_response(None)
 
 @app.route('/diary/permission', methods=['POST'])
 def diary_permission():
-    # TODO change permission of diary entry
-    return "change permissions!"
+    req_data = request.get_json()
+    if not all(k in req_data.keys() for k in ['token', 'id', 'public']):
+        return make_json_response("Invalid authentication token.", False)
+    if not check_valid_token(req_data['token']):
+        return make_json_response("Invalid authentication token.", False)
+
+    entry = Entry.query.get(req_data['id'])
+    if entry is None:
+         return make_json_response("Entry does not exist.", False)
+
+    req_user_id = retrieve_user_id(req_data['token'])
+    if entry.user_id != req_user_id: # only owner of entry can change the permission
+        return make_json_response("Invalid authentication token.", False)
+
+    entry.public = req_data['public']
+    db.session.commit()
+    return make_json_response(None)
 
 if __name__ == '__main__':
     # Change the working directory to the script directory
