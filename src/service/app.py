@@ -120,6 +120,11 @@ def create_diary_entry(req_data):
     db.session.commit()
     return entry.id
 
+def check_empty_entry(req_data):
+    title = req_data['title'];
+    text = req_data['text'];
+    return (title.strip() == "" or text.strip() == "") 
+
 #############################
 ## Admin Routes
 #############################
@@ -227,9 +232,11 @@ def diary_create():
     if not all(k in req_data.keys() for k in ['token', 'title', 'public', 'text']):
         return make_json_response("Invalid authentication token.", False)
     # Check if token is valid
+    if check_empty_entry(req_data):
+        return make_json_response("Empty title or entry!", status=False, code=200)
     if check_valid_token(req_data['token']):
         entry_id = create_diary_entry(req_data)
-        return make_json_response({'id': entry_id}, status=201)
+        return make_json_response({'id': entry_id}, code=201)
     return make_json_response("Invalid authentication token.", False)
 
 @app.route('/diary/delete', methods=['POST'])
