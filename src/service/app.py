@@ -148,8 +148,8 @@ def meta_members():
 def register_user():
     if request.method == 'POST':
         req_data = request.get_json()
-        if not all(k in req_data.keys() for k in ['username', 'password', 'fullname', 'age']):
-            return make_json_response("Please fill in all the required information", False)
+        if not req_data or not all(k in req_data.keys() for k in ['username', 'password', 'fullname', 'age']):
+            return make_json_false_response()
         try:
             user = User(username=req_data['username'],
                         fullname=req_data['fullname'],
@@ -164,8 +164,8 @@ def register_user():
 @app.route("/users/authenticate", methods=['POST'])
 def auth_user():
     req_data = request.get_json()
-    if not all(k in req_data.keys() for k in ['username', 'password']):
-        return make_json_response("Please fill in all the required information", False)
+    if not req_data or not all(k in req_data.keys() for k in ['username', 'password']):
+        return make_json_false_response()
     auth_user = User.query.filter_by(username=req_data['username']).first()
     if auth_user:
         if auth_user.check_password(req_data['password']):
@@ -176,6 +176,8 @@ def auth_user():
 @app.route("/users/expire", methods=['POST'])
 def expire_token():
     req_data = request.get_json()
+    if not req_data:
+        return make_json_false_response()
     if req_data['token']:
         token = Token.query.filter_by(token=req_data['token']).first()
         if token:
@@ -187,6 +189,8 @@ def expire_token():
 @app.route("/users", methods=['POST'])
 def retrieve_user_info():
     req_data = request.get_json()
+    if not req_data:
+        return make_json_false_response()
     if req_data['token']:
         token = Token.query.filter_by(token=req_data['token']).first()
         if token:
@@ -197,7 +201,10 @@ def retrieve_user_info():
 
 @app.route("/users/check", methods=['POST'])
 def retrieve_token_validity():
+    # Not a testable API endpoint. For internal use only.
     req_data = request.get_json()
+    if not req_data:
+        return make_json_false_response()
     if req_data['token']:
         token = Token.query.filter_by(token=req_data['token']).first()
         if token:
@@ -215,6 +222,8 @@ def diary():
         return make_json_response([e.json_dict() for e in entries])
     else:
         req_data = request.get_json()
+        if not req_data:
+            return make_json_response("Invalid authentication token.", False)
         if check_valid_token(req_data['token']):
             user_id = retrieve_user_id(req_data['token'])
             entries = Entry.query.filter_by(user_id=user_id).all()
@@ -224,7 +233,7 @@ def diary():
 @app.route('/diary/create', methods=['POST'])
 def diary_create():
     req_data = request.get_json()
-    if not all(k in req_data.keys() for k in ['token', 'title', 'public', 'text']):
+    if not req_data or not all(k in req_data.keys() for k in ['token', 'title', 'public', 'text']):
         return make_json_response("Invalid authentication token.", False)
     # Check if token is valid
     if check_valid_token(req_data['token']):
@@ -235,7 +244,7 @@ def diary_create():
 @app.route('/diary/delete', methods=['POST'])
 def diary_delete():
     req_data = request.get_json()
-    if not all(k in req_data.keys() for k in ['token', 'id']):
+    if not req_data or not all(k in req_data.keys() for k in ['token', 'id']):
         return make_json_response("Invalid authentication token.", False)
     if not check_valid_token(req_data['token']):
         return make_json_response("Invalid authentication token.", False)
@@ -256,7 +265,7 @@ def diary_delete():
 @app.route('/diary/permission', methods=['POST'])
 def diary_permission():
     req_data = request.get_json()
-    if not all(k in req_data.keys() for k in ['token', 'id', 'public']):
+    if not req_data or not all(k in req_data.keys() for k in ['token', 'id', 'public']):
         return make_json_response("Invalid authentication token.", False)
     if not check_valid_token(req_data['token']):
         return make_json_response("Invalid authentication token.", False)
