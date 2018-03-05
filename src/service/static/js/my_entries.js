@@ -1,9 +1,14 @@
 var MY_ENTRIES_METHOD = {
   handlerData:function(resJSON){
-      var templateSource   = $("#entry-template").html(),
-          template = Handlebars.compile(templateSource),
-          entryHTML = template(resJSON);
-     $('#entries-container').html(entryHTML);
+    var templateSource   = $("#entry-template").html(),
+      template = Handlebars.compile(templateSource),
+      entryHTML = template(resJSON);
+    header = "<div class='col s12'><h5>My Entries</h5>";
+    if(entryHTML.trim() == ""){
+      $('#entries-container').html(header + "<div class='card-panel'><div class='row'>No entries! Why don't you create one?</div></div></div>")
+    } else {
+      $('#entries-container').html(header + entryHTML);
+    }
   },
   loadEntryData : function(){
     $.ajax({
