@@ -48,7 +48,7 @@ def setup_database(app):
 
 def make_json_response(data, status=True, code=200):
     """Utility function to create the JSON responses."""
-    
+
     to_serialize = {}
     if status:
         to_serialize['status'] = True
@@ -144,11 +144,6 @@ def meta_members():
 #############################
 ## Users Routes
 #############################
-@app.route("/allusers") # TODO debug api, to remove before submission
-def all_users():
-    users = User.query.all()
-    return make_json_response([u.json_dict() for u in users])
-
 @app.route("/users/register", methods=['POST'])
 def register_user():
     if request.method == 'POST':
@@ -175,7 +170,7 @@ def auth_user():
     if auth_user:
         if auth_user.check_password(req_data['password']):
             token = add_user_token()
-            return make_json_response({"token": token}) #TODO double check this response
+            return make_json_response({"token": token})
     return make_json_false_response()
 
 @app.route("/users/expire", methods=['POST'])
@@ -245,7 +240,10 @@ def diary_delete():
     if not check_valid_token(req_data['token']):
         return make_json_response("Invalid authentication token.", False)
 
-    entry = Entry.query.get(req_data['id']) # TODO maybe use get_or_404
+    entry = Entry.query.get(req_data['id'])
+    if entry is None:
+         return make_json_response("Entry does not exist.", False)
+
     req_user_id = retrieve_user_id(req_data['token'])
     if entry.user_id != req_user_id: # only owner of entry can delete entry
         return make_json_response("Invalid authentication token.", False)
@@ -263,7 +261,10 @@ def diary_permission():
     if not check_valid_token(req_data['token']):
         return make_json_response("Invalid authentication token.", False)
 
-    entry = Entry.query.get(req_data['id']) # TODO maybe use get_or_404
+    entry = Entry.query.get(req_data['id'])
+    if entry is None:
+         return make_json_response("Entry does not exist.", False)
+
     req_user_id = retrieve_user_id(req_data['token'])
     if entry.user_id != req_user_id: # only owner of entry can change the permission
         return make_json_response("Invalid authentication token.", False)
