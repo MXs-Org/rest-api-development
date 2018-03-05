@@ -83,15 +83,18 @@ If a response is received, you're good to go.
 **Please replace the details below with information relevant to your team.**
 
 ## Screenshots
-
-Please replace the example screenshots with screenshots of your completed
-project. Feel free to include more than one.
-
-![Sample Screenshot](./img/samplescreenshot.png)
+### Login
+![Login](./img/login.png)
+### Register
+![Register](./img/register.png)
+### Public entries
+![Public entries](./img/publicposts.png)
+### Authenticated user's entries with delete and change permissions
+![My entries](./img/myposts.png)
+### Create entry
+![Create](./img/create.png)
 
 ## Administration and Evaluation
-
-Please fill out this section with details relevant to your team.
 
 ### Team Members
 
@@ -104,7 +107,7 @@ Please fill out this section with details relevant to your team.
 #### Question 1: Briefly describe the web technology stack used in your implementation.
 
 Answer:
-On the backend, we used the Flask microframework for the web application, 
+On the backend, we used the Flask microframework for the web application,
 sqlite as the database and Flask-SQLAlchemy as the database ORM.
 
 As for the frontend, we used basic HTML, Bootstrap CSS for styling, and mostly
